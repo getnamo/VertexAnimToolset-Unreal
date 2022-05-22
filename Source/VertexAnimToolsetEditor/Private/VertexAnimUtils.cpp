@@ -254,7 +254,7 @@ static void AddOrDuplicateMaterial(UMaterialInterface* InMaterialInterface, cons
 		FString MaterialName;
 		FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 		AssetToolsModule.Get().CreateUniqueAssetName(MaterialPath, TEXT(""), MaterialPath, MaterialName);
-		UPackage* MaterialPackage = CreatePackage(NULL, *MaterialPath);
+		UPackage* MaterialPackage = CreatePackage(*MaterialPath);
 
 		// Duplicate the object into the new package
 		UMaterialInterface* NewMaterialInterface = DuplicateObject<UMaterialInterface>(InMaterialInterface, MaterialPackage, *MaterialName);
@@ -540,7 +540,7 @@ UStaticMesh* FVertexAnimUtils::ConvertMeshesToStaticMesh(const TArray<UMeshCompo
 		if (bValidData)
 		{
 			// Then find/create it.
-			UPackage* Package = CreatePackage(NULL, *PackageName);
+			UPackage* Package = CreatePackage(*PackageName);
 			check(Package);
 
 			// Create StaticMesh object
@@ -584,7 +584,7 @@ UStaticMesh* FVertexAnimUtils::ConvertMeshesToStaticMesh(const TArray<UMeshCompo
 			StaticMesh->ImportVersion = EImportStaticMeshVersion::LastVersion;
 
 			// Set light map coordinate index to match DstLightmapIndex
-			StaticMesh->LightMapCoordinateIndex = LightMapIndex;
+			StaticMesh->SetLightMapCoordinateIndex(LightMapIndex);
 
 			// setup section info map
 			for (int32 RawMeshLODIndex = 0; RawMeshLODIndex < RawMeshes.Num(); RawMeshLODIndex++)
@@ -691,7 +691,7 @@ void FVertexAnimUtils::VATUVsToStaticMeshLODs(UStaticMesh* StaticMesh, const int
 
 				StaticMesh->ImportVersion = EImportStaticMeshVersion::LastVersion;
 				// Set light map coordinate index to match DstLightmapIndex
-				StaticMesh->LightMapCoordinateIndex = LightMapIndex;
+				StaticMesh->SetLightMapCoordinateIndex(LightMapIndex);
 			
 
 			}

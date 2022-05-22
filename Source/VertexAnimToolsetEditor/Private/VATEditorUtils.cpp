@@ -800,7 +800,7 @@ static UTexture2D* SetTexture2(
 		}
 		else
 		{
-			UPackage* Package = CreatePackage(NULL, *(PackagePath + Name));
+			UPackage* Package = CreatePackage(*(PackagePath + Name));
 			check(Package);
 			Package->FullyLoad();
 
