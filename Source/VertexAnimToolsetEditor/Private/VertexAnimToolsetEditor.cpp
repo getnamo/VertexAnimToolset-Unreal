@@ -38,7 +38,7 @@
 
 #include "Toolkits/ToolkitManager.h"
 #include "Dialogs/DlgPickAssetPath.h"
-#include "AssetRegistryModule.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 
 #include "VertexAnimUtils.h"
 #include "VertexAnimProfile.h"

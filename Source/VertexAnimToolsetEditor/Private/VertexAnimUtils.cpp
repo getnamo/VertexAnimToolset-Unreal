@@ -85,7 +85,7 @@
 
 #include "Toolkits/ToolkitManager.h"
 #include "Dialogs/DlgPickAssetPath.h"
-#include "AssetRegistryModule.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 
 #include "VertexAnimProfile.h"
 
@@ -324,7 +324,7 @@ static void SkinnedMeshToRawMeshes(USkinnedMeshComponent* InSkinnedMeshComponent
 		FRawMeshTracker& RawMeshTracker = OutRawMeshTrackers[OverallLODIndex];
 		const int32 BaseVertexIndex = RawMesh.VertexPositions.Num();
 
-		FSkeletalMeshLODInfo& SrcLODInfo = *(InSkinnedMeshComponent->SkeletalMesh->GetLODInfo(LODIndexRead));
+		FSkeletalMeshLODInfo& SrcLODInfo = *(InSkinnedMeshComponent->GetSkinnedAsset()->GetLODInfo(LODIndexRead));
 
 		// Get the CPU skinned verts for this LOD
 		TArray<FFinalSkinVertex> FinalVertices;
@@ -395,7 +395,7 @@ static void SkinnedMeshToRawMeshes(USkinnedMeshComponent* InSkinnedMeshComponent
 				// use the remapping of material indices if there is a valid value
 				if (SrcLODInfo.LODMaterialMap.IsValidIndex(SectionIndex) && SrcLODInfo.LODMaterialMap[SectionIndex] != INDEX_NONE)
 				{
-					MaterialIndex = FMath::Clamp<int32>(SrcLODInfo.LODMaterialMap[SectionIndex], 0, InSkinnedMeshComponent->SkeletalMesh->GetMaterials().Num());
+					MaterialIndex = FMath::Clamp<int32>(SrcLODInfo.LODMaterialMap[SectionIndex], 0, InSkinnedMeshComponent->GetSkinnedAsset()->GetMaterials().Num());
 				}
 
 				// copy face info
@@ -798,7 +798,12 @@ void SPickAssetDialog::Construct(const FArguments& InArgs)
 		// Vertex Anim Profile
 		{
 			FAssetPickerConfig AssetPickerConfig;
-			AssetPickerConfig.Filter.ClassNames.Add(UVertexAnimProfile::StaticClass()->GetFName());
+
+			//NB: this may be breaking
+			//AssetPickerConfig.Filter.ClassNames.Add(UVertexAnimProfile::StaticClass()->GetFName());
+			FTopLevelAssetPath VertexAnimPath = UVertexAnimProfile::StaticClass()->GetDefaultObject()->GetClass()->GetClassPathName();
+			AssetPickerConfig.Filter.ClassPaths.Add(VertexAnimPath);
+			
 			AssetPickerConfig.SelectionMode = ESelectionMode::Single;
 
 			AssetPickerConfig.GetCurrentSelectionDelegates.Add(&GetCurrentSelectionDelegate_Profile);
@@ -976,7 +981,7 @@ void SPickAssetDialog::Construct(const FArguments& InArgs)
 	.HAlign(HAlign_Fill)
 	[
 		SNew(SBorder)
-		.BorderImage(FEditorStyle::GetBrush("ToolPanel.GroupBorder"))
+		.BorderImage(FAppStyle::GetBrush("ToolPanel.GroupBorder"))
 	[
 		SNew(SVerticalBox)
 		+ SVerticalBox::Slot()
@@ -1034,15 +1039,15 @@ void SPickAssetDialog::Construct(const FArguments& InArgs)
     .VAlign(VAlign_Bottom)
     [
 	SNew(SUniformGridPanel)
-	.SlotPadding(FEditorStyle::GetMargin("StandardDialog.SlotPadding"))
-	.MinDesiredSlotWidth(FEditorStyle::GetFloat("StandardDialog.MinDesiredSlotWidth"))
-	.MinDesiredSlotHeight(FEditorStyle::GetFloat("StandardDialog.MinDesiredSlotHeight"))
+	.SlotPadding(FAppStyle::GetMargin("StandardDialog.SlotPadding"))
+	.MinDesiredSlotWidth(FAppStyle::GetFloat("StandardDialog.MinDesiredSlotWidth"))
+	.MinDesiredSlotHeight(FAppStyle::GetFloat("StandardDialog.MinDesiredSlotHeight"))
 	+ SUniformGridPanel::Slot(0, 0)
 	[
 		SNew(SButton)
 		.Text(LOCTEXT("OK", "OK"))
 	.HAlign(HAlign_Center)
-	.ContentPadding(FEditorStyle::GetMargin("StandardDialog.ContentPadding"))
+	.ContentPadding(FAppStyle::GetMargin("StandardDialog.ContentPadding"))
 	.OnClicked(this, &SPickAssetDialog::OnButtonClick, EAppReturnType::Ok)
 	]
     + SUniformGridPanel::Slot(1, 0)
@@ -1050,7 +1055,7 @@ void SPickAssetDialog::Construct(const FArguments& InArgs)
 	SNew(SButton)
 	.Text(LOCTEXT("Cancel", "Cancel"))
 	.HAlign(HAlign_Center)
-	.ContentPadding(FEditorStyle::GetMargin("StandardDialog.ContentPadding"))
+	.ContentPadding(FAppStyle::GetMargin("StandardDialog.ContentPadding"))
 	.OnClicked(this, &SPickAssetDialog::OnButtonClick, EAppReturnType::Cancel)
     ]
     ]
