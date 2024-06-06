@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "3.1",
+	"VersionName": "3.2.0",
 	"FriendlyName": "Vertex Anim Toolset V3",
 	"Description": "Tools for baking Skeletal Mesh animation into textures to animate meshes through the material shader",
 	"Category": "Rendering",

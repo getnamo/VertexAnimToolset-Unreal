@@ -161,7 +161,7 @@ void FVertexAnimToolsetEditorModule::RemoveSkeletalMeshEditorToolbarExtender()
 	if (SkeletalMeshEditorModule)
 	{
 		typedef ISkeletalMeshEditorModule::FSkeletalMeshEditorToolbarExtender DelegateType;
-		SkeletalMeshEditorModule->GetAllSkeletalMeshEditorToolbarExtenders().RemoveAll([=](const DelegateType& In) { return In.GetHandle() == SkeletalMeshEditorExtenderHandle; });
+		SkeletalMeshEditorModule->GetAllSkeletalMeshEditorToolbarExtenders().RemoveAll([this](const DelegateType& In) { return In.GetHandle() == SkeletalMeshEditorExtenderHandle; });
 	}
 }
 
